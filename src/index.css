@@ -1,121 +1,89 @@
-/* Global Styles */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f7fc;
-  color: #333;
+*{
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
 }
-
-h1 {
+body{
+  font-family: Arial, Helvetica, sans-serif;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+}
+h1{
   text-align: center;
-  color: #4A90E2;
+  background-color: rgb(5, 5, 90);
+  color: rgb(252, 252, 255);
+  font-size: 30px;
+  height:50px;
 }
-
-/* Tracker Container */
-.tracker-container {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 600px;
-}
-
-.form-container {
-  margin-top: 20px;
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #555;
-}
-
-input, select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-}
-
-input:focus, select:focus {
-  border-color: #4A90E2;
-  outline: none;
-}
-
-button {
-  background-color: #4A90E2;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  width: 100%;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #357ABD;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-/* Saved Data List */
-h2 {
-  text-align: center;
-  margin-top: 30px;
-  color: #333;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-.saved-item {
-  background-color: #f9f9f9;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.saved-item p {
-  margin: 5px 0;
-}
-
-.saved-item button {
-  background-color: #E74C3C;
-  color: white;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+.input-container{
+  margin-left: 20px;
   margin-top: 10px;
-  transition: background-color 0.3s ease;
+}
+.input{
+  margin-left: 8px;
+  font-size: 16px;
+  border: 2px solid blue;
+
+  padding: 5px;
+}
+.button-container{
+  margin-top: 20px
+}
+.button{
+  padding: 10px ;
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 2px;
+  margin-left: 70px;
+}
+.plus-icon{
+  margin-right: 5px;
+}
+.clear-button{
+  padding: 10px 10px;
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  color: white;
+  background-color: grey;
+  border: none;
+  border-radius: 1px;
+  
+}
+.results{
+  margin-top: 20px;
+  padding: 20px;
+
+}
+.result-item{
+  margin-bottom: 20px;
+
+}
+.result-value{
+font-weight: bold;
+background-color: lightgreen;
+font-size: 18px;
+border: 1px;
+width: 150px;
+}
+.discription{
+  font-weight: bold;
+  font-size: 18px;
+}
+.weight-suggestion{
+  font-weight: bold;
+  font-size: 20px;
 }
 
-.saved-item button:hover {
-  background-color: #C0392B;
+.footer {
+  background-color: #f8f8f8; 
+  padding: 20px; 
+  margin-top: 40px; 
+  border-top: 2px solid #ccc; 
 }
 
-/* Message when no data saved */
-p {
-  text-align: center;
-  color: #777;
-}
+

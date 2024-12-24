@@ -1,173 +1,189 @@
 import React, { useState } from 'react';
 
-// Main MacroComplianceTracker component
-const MacroComplianceTracker = () => {
-  // State to store form data
-  const [formData, setFormData] = useState({
-    age: '',
-    gender: '',
-    height: '',
-    weight: '',
-    activity: '' // Activity level will be stored as a string
-  });
+function App() {
+  const [age, setAge] = useState('');
+  const [weight, setWeight] = useState('');
+  const [feet, setFeet] = useState('');
+  const [inches, setInches] = useState('');
+  const [gender, setGender] = useState('');
+  const [activity, setActivity] = useState('1.2');
+  const [result, setResult] = useState(null);
+  const [description, setDescription] = useState('');
+  const [weightSuggestion, setWeightSuggestion] = useState('');
 
-  // State to store the saved list of data
-  const [savedList, setSavedList] = useState([]);
-
-  // Handle input change for each field
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  // Calculate compliance percentage based on the filled fields
-  const calculateCompliancePercentage = () => {
-    const totalFields = 5; // There are 5 fields
-    let filledFields = 0;
-
-    // Count how many fields are filled
-    for (const key in formData) {
-      if (formData[key]) filledFields++;
-    }
-
-    // Calculate percentage: (filled fields / total fields) * 100
-    return (filledFields / totalFields) * 100;
-  };
-
-  // Handle save action when the form is filled
-  const handleSave = () => {
-    const { age, gender, height, weight, activity } = formData;
-
-    // Check if any field is empty
-    if (!age || !gender || !height || !weight || !activity) {
-      alert('Please fill in all fields before saving.');
+  const handleCalculate = () => {
+    if (!age || !weight || !feet || !inches) {
+      alert("Please fill in all fields.");
       return;
     }
 
-    // Calculate the compliance percentage
-    const compliancePercentage = calculateCompliancePercentage();
+    if (age < 15 || age > 80) {
+      alert("Age must be between 15 and 80.");
+      return;
+    }
 
-    // Add the form data along with compliance percentage to the saved list
-    setSavedList([
-      ...savedList,
-      { ...formData, compliancePercentage }
-    ]);
+    const heightInCm = (parseFloat(feet) * 30.48) + (parseFloat(inches) * 2.54);
 
-    // Clear the form data after saving
-    setFormData({
-      age: '',
-      gender: '',
-      height: '',
-      weight: '',
-      activity: ''
+    let bmr;
+    if (gender === 'male') {
+      bmr = 88.362 + (13.397 * weight) + (4.799 * heightInCm) - (5.677 * age);
+    } else {
+      bmr = 447.593 + (9.247 * weight) + (3.098 * heightInCm) - (4.330 * age);
+    }
+
+    const tdee = bmr * parseFloat(activity);
+
+    const maintenanceLoss = tdee - 50;
+    const mildLoss = tdee - 250;
+    const moderateLoss = tdee - 500;
+    const extremeLoss = tdee - 750;
+    
+    const maintenanceLossPercentage = ((maintenanceLoss / tdee) * 100).toFixed(2);
+    const mildLossPercentage = ((mildLoss / tdee) * 100).toFixed(2);
+    const moderateLossPercentage = ((moderateLoss / tdee) * 100).toFixed(2);
+    const extremeLossPercentage = ((extremeLoss / tdee) * 100).toFixed(2);
+
+    setResult({
+      maintenanceLoss,
+      mildLoss,
+      moderateLoss,
+      extremeLoss,
+      maintenanceLossPercentage,
+      mildLossPercentage,
+      moderateLossPercentage,
+      extremeLossPercentage
     });
+
+    const heightInMeters = heightInCm / 100;
+    const bmi = weight / (heightInMeters * heightInMeters);
+    
+    if (bmi < 18.5) {
+      setWeightSuggestion("You are underweight. It may be a good idea to consider gaining some weight for better health.");
+    } else if (bmi >= 25) {
+      setWeightSuggestion("You are overweight. It may be a good idea to consider losing some weight for better health.");
+    } else {
+      setWeightSuggestion("Your weight seems to be in a healthy range. Maintain your current lifestyle.");
+    }
   };
 
-  // Handle removal of a saved entry from the saved list
-  const handleRemove = (index) => {
-    const newList = savedList.filter((_, idx) => idx !== index);
-    setSavedList(newList);
+  const handleClear = () => {
+    setAge('');
+    setWeight('');
+    setFeet('');
+    setInches('');
+    setGender('');
+    setActivity('1.2');
+    setResult(null);
+    setDescription('');
+    setWeightSuggestion('');
   };
 
   return (
-    <div className="tracker-container">
-      <h1>Macro Compliance Tracker</h1>
-
-      {/* Form for user input */}
-      <div className="form-container">
-        <div>
-          <label>Age: </label>
-          <input 
-            type="number" 
-            name="age" 
-            value={formData.age} 
-            onChange={handleInputChange} 
-            placeholder="Enter your age"
-          />
+    <div className='App-container'>
+      <h1>Modify the values and click the button</h1>
+      {result && (
+        <div className='results'>
+          <div className='result-item'>
+            <p>Maintenance Calories:</p>
+            <p className='result-value'>{result.maintenanceLoss.toFixed(0)} Calories/day ({result.maintenanceLossPercentage}%)</p>
+          </div>
+          <div className='result-item'>
+            <p>Mild Weight Loss (0.5 lb/week)</p>
+            <p className='result-value'>{result.mildLoss.toFixed(0)} Calories/day ({result.mildLossPercentage}%)</p>
+          </div>
+          <div className='result-item'>
+            <p>Moderate Weight Loss (1 lb/week)</p>
+            <p className='result-value'>{result.moderateLoss.toFixed(0)} Calories/day ({result.moderateLossPercentage}%)</p>
+          </div>
+          <div className='result-item'>
+            <p>Extreme Weight Loss (2 lb/week)</p>
+            <p className='result-value'>{result.extremeLoss.toFixed(0)} Calories/day ({result.extremeLossPercentage}%)</p>
+          </div>
         </div>
+      )}
+      {description && <div className='description'>{description}</div>}
+      {weightSuggestion && <div className='weight-suggestion'>{weightSuggestion}</div>}
 
-        <div>
-          <label>Gender: </label>
-       <select
-       name='gender'
-       value={formData.gender}
-       onChange={handleInputChange}
-       >
-        <option value="">select gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        </select>     
-      
-        </div>
-
-        <div>
-          <label>Height (cm): </label>
-          <input 
-            type="number" 
-            name="height" 
-            value={formData.height} 
-            onChange={handleInputChange} 
-            placeholder="Enter your height"
-          />
-        </div>
-
-        <div>
-          <label>Weight (kg): </label>
-          <input 
-            type="number" 
-            name="weight" 
-            value={formData.weight} 
-            onChange={handleInputChange} 
-            placeholder="Enter your weight"
-          />
-        </div>
-
-        {/* Activity Level Dropdown */}
-        <div>
-          <label>Activity Level: </label>
-          <select 
-            name="activity" 
-            value={formData.activity} 
-            onChange={handleInputChange}
-          >
-            <option value="">Select your activity level</option>
-            <option value="Sedentary">Sedentary (Little or no exercise)</option>
-            <option value="Lightly active">Lightly active (Exercise 1-3 days/week)</option>
-            <option value="Moderately active">Moderately active (Exercise 3-5 days/week)</option>
-            <option value="Very active">Very active (Exercise 6-7 days/week)</option>
-            <option value="Super active">Super active (Very hard exercise or physical job)</option>
-          </select>
-        </div>
-
-        {/* Button to save the form data */}
-        <button onClick={handleSave}>Save</button>
+      <div className='input-container'>
+        <label>Age</label>
+        <input
+          type="number"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+          min="15"
+          max="80"
+          className='input'
+          style={{ width: '100px' }}
+        />
+        <label>ages 15-18</label>
+      </div>
+      <div className='input-container'>
+        <label>Gender</label>
+        <select value={gender} onChange={(e) => setGender(e.target.value)} style={{ width: '200px' }} className='input'>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div className='input-container'>
+        <label>Height</label>
+        <input
+          type="number"
+          value={feet}
+          placeholder="feet"
+          onChange={(e) => setFeet(e.target.value)}
+          className='input'
+          style={{ width: '100px' }}
+        />
+        <input
+          type="number"
+          value={inches}
+          placeholder="inches"
+          onChange={(e) => setInches(e.target.value)}
+          className='input'
+          style={{ width: '100px' }}
+        />
+      </div>
+      <div className='input-container'>
+        <label>Weight</label>
+        <input
+          type="number"
+          value={weight}
+          placeholder='kg'
+          onChange={(e) => setWeight(e.target.value)}
+          className='input'
+        />
+      </div>
+      <div className='input-container'>
+        <label>Activity</label>
+        <select value={activity} onChange={(e) => setActivity(e.target.value)} className='input'>
+          <option value="1.2">Sedentary (little to no exercise)</option>
+          <option value="1.375">Lightly active (light exercise/sports 1-3 days/week)</option>
+          <option value="1.55">Moderately active (moderate exercise/sports 3-5 days/week)</option>
+          <option value="1.725">Very active (hard exercise/sports 6-7 days a week)</option>
+          <option value="1.9">Super active (very hard exercise, physical job)</option>
+        </select>
       </div>
 
-      {/* Display saved list */}
-      <h2>Saved Data</h2>
-      {savedList.length > 0 ? (
-        <ul>
-          {savedList.map((item, index) => (
-            <li key={index} className="saved-item">
-              <div>
-                <p><strong>Age:</strong> {item.age}</p>
-                <p><strong>Gender:</strong> {item.gender}</p>
-                <p><strong>Height:</strong> {item.height} cm</p>
-                <p><strong>Weight:</strong> {item.weight} kg</p>
-                <p><strong>Activity Level:</strong> {item.activity}</p>
-                <p><strong>Compliance:</strong> {item.compliancePercentage}%</p>
-                
-                {/* Remove button for each saved entry */}
-                <button onClick={() => handleRemove(index)}>Remove</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No data saved yet.</p>
-      )}
+      <div className='button-container'>
+        <button onClick={handleCalculate} className='button'>
+          <span className='plus-icon'>+</span> Calculate
+        </button>
+        <button onClick={handleClear} className='clear-button'>
+          Clear
+        </button>
+      </div>
+
+      <footer className='footer'>
+        <div className='footer-content'>
+          <ul>
+            <li>Exercise: 13-30 minutes of elevated heart rate activity</li>
+            <li>Intense Exercise: 40-120 minutes of elevated heart rate activity</li>
+            <li>Very Intense Exercise: 2 hours of elevated heart rate activity</li>
+          </ul>
+        </div>
+      </footer>
     </div>
   );
-};
+}
 
-export default MacroComplianceTracker;
+export default App;
